@@ -14,7 +14,7 @@
 #include <CAEN_FELib.h>
 #include "inttypes.h"
 
-//#define DEBUG 1
+#define DEBUG 1
 
 struct RawEvent{
   uint8_t *data;
@@ -104,6 +104,7 @@ void evtloop(void){
   struct RawEvent *rawEvt = NULL;
   int ec;
   char value[256];
+  //  uint64_t PrevTimeStamp = 0; //[8 Byte]          
 
   fprintf(stdout, "evtloop start!\n");
 
@@ -155,6 +156,7 @@ void evtloop(void){
     switch(status){
     case STAT_RUN_IDLE:
       /* noop */
+      //      PrevTimeStamp = 0; //[8 Byte]              
       break;
     case STAT_RUN_START:
     case STAT_RUN_NSSTA:
@@ -195,10 +197,10 @@ void evtloop(void){
       segdataFocusAddress+=1;
 
 #ifdef DEBUG
-      //      if(aggregatedCounter<10){
+      if(aggregatedCounter<10){
 	fprintf(stdout, "AggregatedCounter = %016"PRIu64" AggregatedWords = %"PRIu64"\n", aggregatedCounter, aggregatedWords);
 	fprintf(stdout, "common header segdata = 0x%"PRIx64"\n", segdata[0]);
-	//      }
+      }
 #endif
 
       int NExtraWord    = 1; //[8 Byte] if waveform is exist, +1 (maybe)if EnStatEvents is enabled, +2
@@ -222,8 +224,10 @@ void evtloop(void){
 	timeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 2]                   <<40);
 	flagWaveform |= ( (rawEvt->data[8*(dataFocusAddress + 1)             ]     & 0b01000000 )>>6 );
 
-#ifdef DEBUG	
-	fprintf(stdout, "flagWaveform = %u\n", flagWaveform);
+#ifdef DEBUG
+	if(aggregatedCounter<10){	
+	  fprintf(stdout, "flagWaveform = %u\n", flagWaveform);
+	}
 #endif
 	
 	if(flagWaveform){
@@ -238,24 +242,32 @@ void evtloop(void){
 	  uint64_t *hoge0 = (uint64_t *)(rawEvt->data + 8* dataFocusAddress);
 	  uint64_t *hoge1 = (uint64_t *)(rawEvt->data + 8* (dataFocusAddress+1));
 	  uint64_t *hoge2 = (uint64_t *)(rawEvt->data + 8* (dataFocusAddress+2));
-	  fprintf(stdout, "row(timestamp) = 0x%160"PRIx64"\n", *hoge0);
-	  fprintf(stdout, "row(energy)    = 0x%160"PRIx64"\n", *hoge1);
-	  fprintf(stdout, "row(extra)     = 0x%160"PRIx64"\n", *hoge2);
+	  if(aggregatedCounter<10){	  
+	    fprintf(stdout, "row(timestamp) = 0x%160"PRIx64"\n", *hoge0);
+	    fprintf(stdout, "row(energy)    = 0x%160"PRIx64"\n", *hoge1);
+	    fprintf(stdout, "row(extra)     = 0x%160"PRIx64"\n", *hoge2);
+	  }
 	  //	  break;
 #endif
 	}
 
 
 #ifdef DEBUG
-	//	if(aggregatedCounter<10){
+	if(aggregatedCounter<10){
 	  fprintf(stdout, "TimeStamp = %"PRIu64" EvtSize = %"PRIu64" ", timeStamp, evtSize);
-	  //	}
+	}
 #endif	
 
 	if(timeStamp == PrevTimeStamp || dataFocusAddress==1){
+	//	if(timeStamp == PrevTimeStamp || PrevTimeStamp == 0){	  
 	  memcpy(segdata+segdataFocusAddress, rawEvt->data+8*dataFocusAddress, evtSize*8);
 	  segdataFocusAddress += evtSize;
-	  PrevTimeStamp = timeStamp;	  
+	  PrevTimeStamp = timeStamp;
+#ifdef DEBUG
+	  if(aggregatedCounter<10){	
+	    fprintf(stdout, "dataFocusAddress = %"PRIu64" PrevTimeStamp = %"PRIu64"\n", dataFocusAddress, PrevTimeStamp);
+	  }
+#endif	  
 	}
 	else{
 	  segdata[0] &= 0x00000000ffffffff;
@@ -264,6 +276,11 @@ void evtloop(void){
 	  babies_init_event();
 	  babies_init_segment(MKSEGID(0, 0, 0, V2740));
 	  babies_segdata((char *)segdata, segdataFocusAddress*8);
+#ifdef DEBUG	  
+	  if(aggregatedCounter<10){		  
+	    fprintf(stdout, "babies_segdata() is done.\n");
+	  }
+#endif
 	  babies_end_segment();
 	  babies_end_event();
 
@@ -272,9 +289,7 @@ void evtloop(void){
 	  segdataFocusAddress+=evtSize;
 	  PrevTimeStamp = timeStamp;
 	}
-#ifdef DEBUG
-	fprintf(stdout, "dataFocusAddress = %"PRIu64"\n", dataFocusAddress);
-#endif
+
 
 	dataFocusAddress += evtSize;	
 //	if(dataFocusAddress < aggregatedWords){
@@ -404,8 +419,8 @@ int InitV2740(void){
     fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
     return ec;
   }
-  //  char ITLAMask[256] = "0x0000000000000001";  
-  char ITLAMask[256] = "0x0000000000000011";  
+  char ITLAMask[256] = "0x0000000000000001";  
+  //  char ITLAMask[256] = "0x0000000000000011";
   snprintf(value, sizeof(value), "%s", ITLAMask);
   ec = CAEN_FELib_SetValue(devHandle, "/par/ITLAMask", value);
   if(ec != CAEN_FELib_Success){
@@ -531,8 +546,8 @@ int InitV2740(void){
   //
 
   //Enabled ch parameters settings
-  //  int chEnabled[] = {0};  
-  int chEnabled[] = {0, 4};
+  int chEnabled[] = {0};  
+  //  int chEnabled[] = {0, 4};
   int sizeChEnabled = sizeof(chEnabled)/sizeof(chEnabled[0]);
   fprintf(stdout, "sizeChEnabled = %d\n", sizeChEnabled);
   //  int *chDisabled = (int*)malloc(sizeof(int)*(64-sizeChEnabled));
@@ -600,8 +615,9 @@ int InitV2740(void){
       fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
       return ec;
     }
-    
-    int dcOffset = 100;
+
+    //    int dcOffset = 100;    
+    int dcOffset = 80;
     snprintf(value, sizeof(value), "%d",                  dcOffset      );
     snprintf(path,  sizeof(path),  "/ch/%d/par/DCOffset", chEnabled[i]  );
     ec = CAEN_FELib_SetValue(devHandle, path, value);
@@ -720,8 +736,9 @@ int InitV2740(void){
       return ec;
     }               
     
-
-    char timeFilterRiseTimeS[256] = "10";   
+    //    char timeFilterRiseTimeS[256] = "10"; //for emulator 
+    char timeFilterRiseTimeS[256] = "250"; //for emulator 
+    //    char timeFilterRiseTimeS[256] = "250";   //for GAGG signal 2 us / 0.008 us = 250
     snprintf(value, sizeof(value), "%s",                             timeFilterRiseTimeS);
     snprintf(path,  sizeof(path),  "/ch/%d/par/TimeFilterRiseTimeS", chEnabled[i]       );        
     ec = CAEN_FELib_SetValue(devHandle, path, value);
@@ -729,7 +746,9 @@ int InitV2740(void){
       fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
       return ec;
     }
-    char timeFilterRetriggerGuardS[256] = "125";   
+    char timeFilterRetriggerGuardS[256] = "0"; //for emulator    
+    //    char timeFilterRetriggerGuardS[256] = "125"; //for emulator
+    //    char timeFilterRetriggerGuardS[256] = "250";       //for GAGG signal
     snprintf(value, sizeof(value), "%s",                                   timeFilterRetriggerGuardS);
     snprintf(path,  sizeof(path),  "/ch/%d/par/TimeFilterRetriggerGuardS", chEnabled[i]             );        
     ec = CAEN_FELib_SetValue(devHandle, path, value);
