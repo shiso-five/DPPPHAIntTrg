@@ -302,8 +302,10 @@ void evtloop(void){
       break;
     case STAT_RUN_WAITSTOP:
       // for the last sequense of run
-      sca();
-      babies_flush();
+      if(babies_chk_block(2)){      
+	sca();
+	babies_flush();
+      }
       babies_last_block();
       fprintf(stdout, "while loop stop\n");
       break;
