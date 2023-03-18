@@ -300,12 +300,12 @@ void evtloop(void){
 	}
 	else{
 	  uint64_t nextTimeStamp    = 0x0000000000000000;
-	  nextTimeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 7]                       );
-	  nextTimeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 6]                   <<8 );
-	  nextTimeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 5]                   <<16);	
-	  nextTimeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 4]                   <<24);
-	  nextTimeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 3]                   <<32);
-	  nextTimeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 2]                   <<40);
+	  timeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 7]                       );
+	  timeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 6]                   <<8 );
+	  timeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 5]                   <<16);	
+	  timeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 4]                   <<24);
+	  timeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 3]                   <<32);
+	  timeStamp    |= (  rawEvt->data[8* dataFocusAddress               + 2]                   <<40);
 	  if(timeStamp != nextTimeStamp){
 	    segdata[0] &= 0x00000000ffffffff;
 	    segdata[0] |= segdataFocusAddress<<32;
@@ -393,13 +393,12 @@ void evtloop(void){
       //  data should be send to the event builder
       //  i.e., read scaler and flush
       // example : 8000 = 16kB
-      //	if(babies_chk_block(128000)){
-      if(babies_chk_block(64000)){	
-	//      if(babies_chk_block(2000000)){      
-	sca();
-	babies_flush();
-      }
-      clear();	      	      
+//      if(babies_chk_block(4000000)){
+//	  //      if(babies_chk_block(2000000)){      
+//	sca();
+//	babies_flush();
+//      }
+//      clear();	      
 
       break;
     case STAT_RUN_WAITSTOP:
@@ -509,7 +508,6 @@ int InitV2740(void){
   }
   char ITLAMask[256] = "0x0000000000000001";  
   //  char ITLAMask[256] = "0x0000000000000011";
-  //  char ITLAMask[256] = "0x0000000000000110";  
   snprintf(value, sizeof(value), "%s", ITLAMask);
   ec = CAEN_FELib_SetValue(devHandle, "/par/ITLAMask", value);
   if(ec != CAEN_FELib_Success){
@@ -637,7 +635,6 @@ int InitV2740(void){
   //Enabled ch parameters settings
   int chEnabled[] = {0};  
   //  int chEnabled[] = {0, 4};
-  //  int chEnabled[] = {4, 8};  
   int sizeChEnabled = sizeof(chEnabled)/sizeof(chEnabled[0]);
   fprintf(stdout, "sizeChEnabled = %d\n", sizeChEnabled);
   //  int *chDisabled = (int*)malloc(sizeof(int)*(64-sizeChEnabled));

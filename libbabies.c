@@ -1079,6 +1079,7 @@ int babies_end_ncscaler32(void){
 // size in character
 int babies_segdata(char *buff, int size){
   if(fseg){
+    //    fprintf(stdout, "idx=%d datapt[idx]=%lx sizeof(datapt[idx])=%u buff=%lu sizeof(buff)=%u size=%u mp=%u\n", idx, datapt[idx], sizeof(datapt[idx]), buff, sizeof(buff), size, mp);
     memcpy((char *)(datapt[idx]+mp), buff, size);
     segmentsize += size/2;
 

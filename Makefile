@@ -1,7 +1,9 @@
 ALL: csample csamplets bigsample
 
 #CFLAGS = -Wall -O2 -g -DDEBUG
-CFLAGS = -Wall -O2 -g 
+#CFLAGS = -Wall -O2 -g
+CFLAGS = -Wall -O3 -g
+#CFLAGS = -Wall -O3 -g  -DDEBUG
 LOADLIBES = -lpthread -lCAEN_FELib
 
 libbabies.o : libbabies.h
