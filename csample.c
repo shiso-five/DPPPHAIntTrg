@@ -29,6 +29,7 @@ unsigned int scrbuff[32] = {0};
 int usl = 1000;
 uint64_t devHandle;
 const char endpoint[256] = "raw";
+int Nnowaveform = 0;
 
 void quit(void){
   printf("Exit\n");
@@ -55,14 +56,34 @@ void start(void){
   if(ec != CAEN_FELib_Success){
     fprintf(stderr, "ERROR : fail SendCommand. ec : %d\n", ec);
     return;
-  }    
+  }
+
+  Nnowaveform = 0;  
 }
 
 void stop(void){
   printf("Stop\n");
 
-  //DAQ end
+  //DAQ end  
   int ec;
+  char value[256];
+  //  int value=9999;
+//  ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChRealTimeMonitor", value);
+//  if(ec != CAEN_FELib_Success){
+//    fprintf(stderr, "<stop()> ERROR : cannot GetValue successfully. ec : %d\n", ec);
+//  }
+//  else{
+//    fprintf(stdout, "ChRealTimeMonitor before swstop: %s\n", value);
+//  }  
+  ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChTriggerCnt", value);
+//    ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChSavedEventCnt", value);
+  if(ec != CAEN_FELib_Success){
+    fprintf(stderr, "<stop()> ERROR : cannot GetValue successfully. ec : %d\n", ec);
+  }
+  else{
+    fprintf(stdout, "ChTriggerCnt before swstop: %s\n", value);
+  }
+  
   ec = CAEN_FELib_SendCommand(devHandle, "/cmd/swstopacquisition");
   if(ec != CAEN_FELib_Success){
     fprintf(stderr, "ERROR : fail SendCommand. ec : %d\n", ec);
@@ -73,7 +94,23 @@ void stop(void){
     fprintf(stderr, "ERROR : fail SendCommand. ec : %d\n", ec);
     return;
   }
+
+//  ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChRealTimeMonitor", value);
+//  if(ec != CAEN_FELib_Success){
+//    fprintf(stderr, "<stop()> ERROR : cannot GetValue successfully. ec : %d\n", ec);
+//  }
+//  else{
+//    fprintf(stdout, "ChRealTimeMonitor before swstop: %s\n", value);
+//  }  //  ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChTriggerCnt", value);
+//  if(ec != CAEN_FELib_Success){
+//    fprintf(stderr, "<stop()> ERROR : cannot GetValue successfully. ec : %d\n", ec);
+//  }
+//  else{
+//    fprintf(stdout, "ChTriggerCnt after  swstop: %s\n", value);
+//  }
   //
+
+  fprintf(stdout, "Nnowaveform = %d\n", Nnowaveform);
   fprintf(stdout, "DAQ end!\n");    
 }
 
@@ -148,7 +185,7 @@ void evtloop(void){
   //v2740
 
   InitV2740();  
-
+  
   while((status = babies_status()) != -1){
     //#ifdef DEBUG    
     //    fprintf(stdout, "babies status: %d\n", status);
@@ -287,7 +324,11 @@ void evtloop(void){
 	  babies_end_segment();
 	  babies_end_event();
 
-	  segdataFocusAddress=1;	  	  
+	  segdataFocusAddress=1;
+
+	  if(!flagWaveform)
+	    Nnowaveform++;
+	  
 
 #ifdef DEBUG
 	  if(aggregatedCounter<10){		  
@@ -315,10 +356,17 @@ void evtloop(void){
 	    //	    fprintf(stdout, "segdataFocusAddress = %"PRIu64"\n", segdataFocusAddress);	      	    
 	    babies_segdata((char *)segdata, segdataFocusAddress*8);
 
+//	    ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChRealTimeMonitor", value);
+//	    fprintf(stdout, "ChRealTimeMonitor before swstop: %s\n", value);	    
+
 	    babies_end_segment();
 	    babies_end_event();
 
-	    segdataFocusAddress=1;	  	    
+	    segdataFocusAddress=1;
+
+	    if(!flagWaveform)
+	      Nnowaveform++;
+	    
 	    if(aggregatedCounter<10){		  
 	      fprintf(stdout, "babies_segdata() is done.\n");
 	      fprintf(stdout, "dataFocusAddress = %"PRIu64"\n", dataFocusAddress);	      
@@ -715,7 +763,7 @@ int InitV2740(void){
       fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
       return ec;
     }
-    int triggerThr = 100; 
+    int triggerThr = 500; 
     snprintf(value, sizeof(value), "%d",                    triggerThr    );
     snprintf(path,  sizeof(path),  "/ch/%d/par/TriggerThr", chEnabled[i]  );
     ec = CAEN_FELib_SetValue(devHandle, path, value);
@@ -743,7 +791,10 @@ int InitV2740(void){
       fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
       return ec;
     }            
-    int chRecordLengthS = 1875; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us
+    //    int chRecordLengthS = 1875; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us
+    //    int chRecordLengthS = 3750; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us
+    //    int chRecordLengthS = 5625; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us
+    int chRecordLengthS = 10000; //125000000 MS/s -> 0.008 us/S 0.008*10000 = 80 us        
     //    int chRecordLengthS = 10; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us    
     snprintf(value, sizeof(value), "%d",                          chRecordLengthS);
     snprintf(path,  sizeof(path),  "/ch/%d/par/ChRecordLengthS",  chEnabled[i]    );    
@@ -827,7 +878,10 @@ int InitV2740(void){
     }               
     
     //    char timeFilterRiseTimeS[256] = "10"; //for emulator 
-    char timeFilterRiseTimeS[256] = "250"; //for emulator 
+    char timeFilterRiseTimeS[256] = "250"; //for emulator
+    //    char timeFilterRiseTimeS[256] = "10"; //for emulator
+    //    char timeFilterRiseTimeS[256] = "100"; //for emulator
+    //    char timeFilterRiseTimeS[256] = "1000"; //for emulator             
     //    char timeFilterRiseTimeS[256] = "250";   //for GAGG signal 2 us / 0.008 us = 250
     snprintf(value, sizeof(value), "%s",                             timeFilterRiseTimeS);
     snprintf(path,  sizeof(path),  "/ch/%d/par/TimeFilterRiseTimeS", chEnabled[i]       );        
