@@ -60,17 +60,32 @@ void start(void){
     return;
   }
 
+<<<<<<< HEAD
+  Nnowaveform = 0;  
+=======
   Nnowaveform = 0;    
+>>>>>>> e77e12a (implemented 'ChTriggerCnt' parameter)
 }
 
 void stop(void){
   printf("Stop\n");
 
-  //DAQ end
+  //DAQ end  
   int ec;
   char value[256];
+<<<<<<< HEAD
+  //  int value=9999;
+//  ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChRealTimeMonitor", value);
+//  if(ec != CAEN_FELib_Success){
+//    fprintf(stderr, "<stop()> ERROR : cannot GetValue successfully. ec : %d\n", ec);
+//  }
+//  else{
+//    fprintf(stdout, "ChRealTimeMonitor before swstop: %s\n", value);
+//  }  
+=======
 
   ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChRealtimeMonitor", value);        
+>>>>>>> e77e12a (implemented 'ChTriggerCnt' parameter)
   ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChTriggerCnt", value);
 //    ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChSavedEventCnt", value);
   if(ec != CAEN_FELib_Success){
@@ -78,7 +93,11 @@ void stop(void){
   }
   else{
     fprintf(stdout, "ChTriggerCnt before swstop: %s\n", value);
+<<<<<<< HEAD
+  }
+=======
   }  
+>>>>>>> e77e12a (implemented 'ChTriggerCnt' parameter)
   
   ec = CAEN_FELib_SendCommand(devHandle, "/cmd/swstopacquisition");
   if(ec != CAEN_FELib_Success){
@@ -90,8 +109,27 @@ void stop(void){
     fprintf(stderr, "ERROR : fail SendCommand. ec : %d\n", ec);
     return;
   }
+
+//  ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChRealTimeMonitor", value);
+//  if(ec != CAEN_FELib_Success){
+//    fprintf(stderr, "<stop()> ERROR : cannot GetValue successfully. ec : %d\n", ec);
+//  }
+//  else{
+//    fprintf(stdout, "ChRealTimeMonitor before swstop: %s\n", value);
+//  }  //  ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChTriggerCnt", value);
+//  if(ec != CAEN_FELib_Success){
+//    fprintf(stderr, "<stop()> ERROR : cannot GetValue successfully. ec : %d\n", ec);
+//  }
+//  else{
+//    fprintf(stdout, "ChTriggerCnt after  swstop: %s\n", value);
+//  }
   //
+<<<<<<< HEAD
+
+  fprintf(stdout, "Nnowaveform = %d\n", Nnowaveform);
+=======
   fprintf(stdout, "Nnowaveform = %d\n", Nnowaveform);  
+>>>>>>> e77e12a (implemented 'ChTriggerCnt' parameter)
   fprintf(stdout, "DAQ end!\n");    
 }
 
@@ -166,7 +204,7 @@ void evtloop(void){
   //v2740
 
   InitV2740();  
-
+  
   while((status = babies_status()) != -1){
     //#ifdef DEBUG    
     //    fprintf(stdout, "babies status: %d\n", status);
@@ -312,7 +350,12 @@ void evtloop(void){
 	  segdataFocusAddress=1;
 
 	  if(!flagWaveform)
+<<<<<<< HEAD
+	    Nnowaveform++;
+	  
+=======
 	    Nnowaveform++;	  
+>>>>>>> e77e12a (implemented 'ChTriggerCnt' parameter)
 
 #ifdef DEBUG
 	  if(aggregatedCounter<10){		  
@@ -340,13 +383,24 @@ void evtloop(void){
 	    //	    fprintf(stdout, "segdataFocusAddress = %"PRIu64"\n", segdataFocusAddress);	      	    
 	    babies_segdata((char *)segdata, segdataFocusAddress*8);
 
+//	    ec = CAEN_FELib_GetValue(devHandle, "/ch/0/par/ChRealTimeMonitor", value);
+//	    fprintf(stdout, "ChRealTimeMonitor before swstop: %s\n", value);	    
+
 	    babies_end_segment();
 	    babies_end_event();
 
+<<<<<<< HEAD
+	    segdataFocusAddress=1;
+
+	    if(!flagWaveform)
+	      Nnowaveform++;
+	    
+=======
 	    if(!flagWaveform)
 	      Nnowaveform++;	    
 
 	    segdataFocusAddress=1;	  	    
+>>>>>>> e77e12a (implemented 'ChTriggerCnt' parameter)
 	    if(aggregatedCounter<10){		  
 	      fprintf(stdout, "babies_segdata() is done.\n");
 	      fprintf(stdout, "dataFocusAddress = %"PRIu64"\n", dataFocusAddress);	      
@@ -551,6 +605,261 @@ int InitV2740(void){
   SetValue2Deg(devHandle, "TestPulseHighLevel",          "32768");
 
   for(int i=0;i<sizeChEnabled;i++){
+<<<<<<< HEAD
+    char path[256];
+    
+    char chEnable[256] = "True";
+    snprintf(value, sizeof(value), "%s",                  chEnable      );
+    snprintf(path,  sizeof(path),  "/ch/%d/par/ChEnable", chEnabled[i]  );
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+//    char itlConnect[256] = "ITLA";
+//    snprintf(value, sizeof(value), "%s",                    itlConnect  );
+//    snprintf(path,  sizeof(path),  "/ch/%d/par/ITLConnect", chEnabled[i]);
+//    ec = CAEN_FELib_SetValue(devHandle, path, value);
+//    if(ec != CAEN_FELib_Success){
+//      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+//      return ec;
+//    }
+    char waveTriggerSource[256] = "GlobalTriggerSource";
+    snprintf(value, sizeof(value), "%s",                  waveTriggerSource);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveTriggerSource", chEnabled[i]  );
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char eventTriggerSource[256] = "GlobalTriggerSource";
+    snprintf(value, sizeof(value), "%s",                  eventTriggerSource);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/EventTriggerSource", chEnabled[i]  );
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+
+    //    int dcOffset = 100;    
+    int dcOffset = 80;
+    snprintf(value, sizeof(value), "%d",                  dcOffset      );
+    snprintf(path,  sizeof(path),  "/ch/%d/par/DCOffset", chEnabled[i]  );
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    int triggerThr = 500; 
+    snprintf(value, sizeof(value), "%d",                    triggerThr    );
+    snprintf(path,  sizeof(path),  "/ch/%d/par/TriggerThr", chEnabled[i]  );
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char pulsePolarity[256] = "Negative";
+    snprintf(value, sizeof(value), "%s",                        pulsePolarity);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/PulsePolarity", chEnabled[i]  );
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveDataSource[256] = "ADC_DATA";
+    //    char waveDataSource[256] = "ADC_TEST_TOGGLE";
+    //    char waveDataSource[256] = "ADC_TEST_RAMP";                
+    //    char waveDataSource[256] = "ADC_TEST_SIN";
+    //    char waveDataSource[256] = "SquareWave";                
+    snprintf(value, sizeof(value), "%s",                        waveDataSource);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveDataSource", chEnabled[i]    );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }            
+    //    int chRecordLengthS = 1875; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us
+    //    int chRecordLengthS = 3750; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us
+    //    int chRecordLengthS = 5625; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us
+    int chRecordLengthS = 10000; //125000000 MS/s -> 0.008 us/S 0.008*10000 = 80 us        
+    //    int chRecordLengthS = 10; //125000000 MS/s -> 0.008 us/S 0.008*25000 = 200 us    
+    snprintf(value, sizeof(value), "%d",                          chRecordLengthS);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/ChRecordLengthS",  chEnabled[i]    );    
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveResolution[256] = "Res8";    
+    snprintf(value, sizeof(value), "%s",                        waveResolution);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveResolution", chEnabled[i]    );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }        
+    int chPreTriggerS = 625;    //0.008 us*625 = 5 us
+    //    int chPreTriggerS = 5;    //0.008 us*625 = 5 us    
+    snprintf(value, sizeof(value), "%d",                        chPreTriggerS);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/ChPreTriggerS",  chEnabled[i]    );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveSaving[256] = "Always";   
+    snprintf(value, sizeof(value), "%s",                    waveSaving);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/waveSaving", chEnabled[i]    );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveAnalogProbe0[256] = "ADCInput";   
+    snprintf(value, sizeof(value), "%s",                           waveAnalogProbe0);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveAnalogProbe0", chEnabled[i]       );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveAnalogProbe1[256] = "TimeFilter";   
+    snprintf(value, sizeof(value), "%s",                           waveAnalogProbe1);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveAnalogProbe1", chEnabled[i]       );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveDigitalProbe0[256] = "Trigger";   
+    snprintf(value, sizeof(value), "%s",                           waveDigitalProbe0);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveDigitalProbe0", chEnabled[i]       );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveDigitalProbe1[256] = "TimeFilterArmed";   
+    snprintf(value, sizeof(value), "%s",                           waveDigitalProbe1);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveDigitalProbe1", chEnabled[i]       );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveDigitalProbe2[256] = "RetriggerGuard";   
+    snprintf(value, sizeof(value), "%s",                           waveDigitalProbe2);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveDigitalProbe2", chEnabled[i]       );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char waveDigitalProbe3[256] = "ADCSaturation";   
+    snprintf(value, sizeof(value), "%s",                           waveDigitalProbe3);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/WaveDigitalProbe3", chEnabled[i]       );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }               
+    
+    //    char timeFilterRiseTimeS[256] = "10"; //for emulator 
+    char timeFilterRiseTimeS[256] = "250"; //for emulator
+    //    char timeFilterRiseTimeS[256] = "10"; //for emulator
+    //    char timeFilterRiseTimeS[256] = "100"; //for emulator
+    //    char timeFilterRiseTimeS[256] = "1000"; //for emulator             
+    //    char timeFilterRiseTimeS[256] = "250";   //for GAGG signal 2 us / 0.008 us = 250
+    snprintf(value, sizeof(value), "%s",                             timeFilterRiseTimeS);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/TimeFilterRiseTimeS", chEnabled[i]       );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char timeFilterRetriggerGuardS[256] = "0"; //for emulator    
+    //    char timeFilterRetriggerGuardS[256] = "125"; //for emulator
+    //    char timeFilterRetriggerGuardS[256] = "250";       //for GAGG signal
+    snprintf(value, sizeof(value), "%s",                                   timeFilterRetriggerGuardS);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/TimeFilterRetriggerGuardS", chEnabled[i]             );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char energyFilterRiseTimeS[256] = "250";   
+    snprintf(value, sizeof(value), "%s",                                   energyFilterRiseTimeS);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/EnergyFilterRiseTimeS",     chEnabled[i]         );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char energyFilterFlatTopS[256] = "125";   
+    snprintf(value, sizeof(value), "%s",                                   energyFilterFlatTopS);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/EnergyFilterFlatTopS",      chEnabled[i]         );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char energyFilterPeakingPosition[256] = "50";   
+    snprintf(value, sizeof(value), "%s",                                   energyFilterPeakingPosition);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/EnergyFilterPeakingPosition",     chEnabled[i]         );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char energyFilterPeakingAvg[256] = "OneShot";   
+    snprintf(value, sizeof(value), "%s",                                   energyFilterPeakingAvg);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/EnergyFilterPeakingAvg",    chEnabled[i]         );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char energyFilterPoleZeroS[256] = "6250";   
+    snprintf(value, sizeof(value), "%s",                                   energyFilterPoleZeroS);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/EnergyFilterPoleZeroS",     chEnabled[i]         );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }
+    char energyFilterFineGain[256] = "1";   
+    snprintf(value, sizeof(value), "%s",                                   energyFilterFineGain);
+    snprintf(path,  sizeof(path),  "/ch/%d/par/EnergyFilterFineGain",     chEnabled[i]         );        
+    ec = CAEN_FELib_SetValue(devHandle, path, value);
+    if(ec != CAEN_FELib_Success){
+      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+      return ec;
+    }                            
+//    char triggerThrMode[256] = "Relative";
+//    snprintf(value, sizeof(value), "%s",                        triggerThrMode);
+//    snprintf(path,  sizeof(path),  "/ch/%d/par/TriggerThrMode", chEnabled[i]  );
+//    ec = CAEN_FELib_SetValue(devHandle, path, value);
+//    if(ec != CAEN_FELib_Success){
+//      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+//      return ec;
+//    }
+//    char selfTriggerEdge[256] = "FALL";
+//    snprintf(value, sizeof(value), "%s",                         selfTriggerEdge);
+//    snprintf(path,  sizeof(path),  "/ch/%d/par/selfTriggerEdge", chEnabled[i]   );
+//    ec = CAEN_FELib_SetValue(devHandle, path, value);
+//    if(ec != CAEN_FELib_Success){
+//      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+//      return ec;
+//    }
+//    char selfTriggerWidth[256] = "8";
+//    snprintf(value, sizeof(value), "%s",                          selfTriggerWidth);
+//    snprintf(path,  sizeof(path),  "/ch/%d/par/SelfTriggerWidth", chEnabled[i]    );
+//    ec = CAEN_FELib_SetValue(devHandle, path, value);
+//    if(ec != CAEN_FELib_Success){
+//      fprintf(stderr, "ERROR : cannot SetValue. ec : %d\n", ec);
+//      return ec;
+//    }
+=======
     SetValue2Ch(devHandle, "ChEnable",                    "True",                   chEnabled[i]);    
     SetValue2Ch(devHandle, "WaveTriggerSource",           "GlobalTriggerSource",    chEnabled[i]);
     SetValue2Ch(devHandle, "EventTriggerSource",          "GlobalTriggerSource",    chEnabled[i]);   
@@ -568,9 +877,9 @@ int InitV2740(void){
     SetValue2Ch(devHandle, "WaveDigitalProbe1",           "TimeFilterArmed",        chEnabled[i]);
     SetValue2Ch(devHandle, "WaveDigitalProbe2",           "RetriggerGuard",         chEnabled[i]);
     SetValue2Ch(devHandle, "WaveDigitalProbe3",           "ADCSaturation",          chEnabled[i]);
-    SetValue2Ch(devHandle, "TimeFilterRiseTimeS",         "250",                    chEnabled[i]);
+    //    SetValue2Ch(devHandle, "TimeFilterRiseTimeS",         "250",                    chEnabled[i]);
     //    SetValue2Ch(devHandle, "TimeFilterRiseTimeS",         "10",                    chEnabled[i]);
-    //    SetValue2Ch(devHandle, "TimeFilterRiseTimeS",         "100",                    chEnabled[i]);
+    SetValue2Ch(devHandle, "TimeFilterRiseTimeS",         "100",                    chEnabled[i]);    
     SetValue2Ch(devHandle, "TimeFilterRetriggerGuardS",   "0",                      chEnabled[i]);
     SetValue2Ch(devHandle, "EnergyFilterRiseTimeS",       "250",                    chEnabled[i]);
     SetValue2Ch(devHandle, "EnergyFilterFlatTopS",        "125",                    chEnabled[i]);
@@ -578,6 +887,7 @@ int InitV2740(void){
     SetValue2Ch(devHandle, "EnergyFilterPeakingAvg",      "OneShot",                chEnabled[i]);
     SetValue2Ch(devHandle, "EnergyFilterPoleZeroS",       "6250",                   chEnabled[i]);
     SetValue2Ch(devHandle, "EnergyFilterFineGain",        "1",                      chEnabled[i]);  
+>>>>>>> e77e12a (implemented 'ChTriggerCnt' parameter)
   }  
   //  
 
