@@ -1,4 +1,4 @@
-ALL: DPPPHAIntTrg DPPPHAIntTrgRawData	
+ALL: DPPPHAIntTrg DPPPHAIntTrgNOEvtDivide
 
 #CFLAGS = -Wall -O2 -g -DDEBUG
 #CFLAGS = -Wall -O2 -g
@@ -10,7 +10,7 @@ libbabies.o : libbabies.h
 
 DPPPHAIntTrg : DPPPHAIntTrg.o libbabies.o
 
-DPPPHAIntTrgRawData : DPPPHAIntTrgRawData.o libbabies.o
+DPPPHAIntTrgNOEvtDivide : DPPPHAIntTrgNOEvtDivide.o libbabies.o
 
 clean :
 	rm -f *.o

@@ -457,9 +457,8 @@ int InitV2740(void){
   GetValueFromDeg(devHandle, "ITLBGateWidth",        value); fprintf(stdout, "ITLBGateWidth        : %s\n", value);    
 
   //Enabled ch parameters settings
-  int chEnabled[] = {1};  
-  //  int chEnabled[] = {0, 1};
-  //  int chEnabled[] = {4, 8};  
+  int chEnabled[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};  
+  //  int chEnabled[] = {0, 1, 4, 5};
   int sizeChEnabled = sizeof(chEnabled)/sizeof(chEnabled[0]);
   fprintf(stdout, "sizeChEnabled = %d\n", sizeChEnabled);
   //  int *chDisabled = (int*)malloc(sizeof(int)*(64-sizeChEnabled));
@@ -468,6 +467,7 @@ int InitV2740(void){
 
   uint64_t itlaMask = 0x0000000000000000, itlbMask;
   for(int i=0;i<64;i++){
+  //  for(int i=0;i<2;i++){  
     int flag = 1;
     for(int j=0;j<sizeChEnabled;j++){
       if(i==chEnabled[j]){
@@ -513,9 +513,9 @@ int InitV2740(void){
   SetValue2Deg (devHandle, "IOLevel",                     "NIM");
   SetValue2Deg (devHandle, "StartSource",                 "SWcmd");
   SetValue2Deg (devHandle, "EnStatEvents",                "False");  
-  SetValue2Deg (devHandle, "GlobalTriggerSource",         "SwTrg|ITLA");
+  //SetValue2Deg (devHandle, "GlobalTriggerSource",         "SwTrg|ITLA");
   SetValue2Deg (devHandle, "ITLAMask"   ,                 strITLAMask);
-  SetValue2Deg (devHandle, "ITLAPairLogic",               "OR"                );
+  SetValue2Deg (devHandle, "ITLAPairLogic",               "AND"                );
   SetValue2Deg (devHandle, "ITLAMainLogic",               "OR");
   SetValue2Deg (devHandle, "ITLAGateWidth",               "0");
   //  SetValue2Deg (devHandle, "ITLAPolarity",                "Inverted");      
@@ -529,12 +529,13 @@ int InitV2740(void){
   SetValue2Deg (devHandle, "BusyInSource",                "Disabled");
   SetValue2Deg (devHandle, "SyncOutMode",                 "IntClk");
   SetValue2Deg (devHandle, "TrgOutMode",                  "ITLA");
-  //  SetValue2Deg (devHandle, "GPIOMode",                    "ITLB");    
-  SetValue2Deg (devHandle, "GPIOMode",                    "Busy");
+  SetValue2Deg (devHandle, "GPIOMode",                    "ITLB");    
+  //  SetValue2Deg (devHandle, "GPIOMode",                    "Busy");
   SetValue2LVDS(devHandle, "LVDSMode",                    "SelfTriggers", "0");
   SetValue2LVDS(devHandle, "LVDSDirection",               "Output",       "0");
-  SetValue2Deg (devHandle, "LVDSTrgMask",                 "0=0x0000000000000001");
-  SetValue2Deg (devHandle, "LVDSTrgMask",                 "1=0x0000000000000002");    
+  SetValue2Deg (devHandle, "LVDSTrgMask",                 "1=0x0000000000000001");
+  SetValue2Deg (devHandle, "LVDSTrgMask",                 "2=0x0000000000000002");
+  SetValue2Deg (devHandle, "LVDSTrgMask",                 "3=0x0000000000000003");      
   SetValue2LVDS(devHandle, "LVDSMode",                    "SelfTriggers", "1");
   SetValue2LVDS(devHandle, "LVDSDirection",               "Output",       "1");
   SetValue2LVDS(devHandle, "LVDSMode",                    "SelfTriggers", "2");
@@ -549,12 +550,12 @@ int InitV2740(void){
   for(int i=0;i<sizeChEnabled;i++){
     SetValue2Ch(devHandle, "ChEnable",                    "True",                   chEnabled[i]);    
     //    SetValue2Ch(devHandle, "WaveTriggerSource",           "GlobalTriggerSource",    chEnabled[i]);
-    SetValue2Ch(devHandle, "EventTriggerSource",          "GlobalTriggerSource",    chEnabled[i]);
-//    SetValue2Ch(devHandle, "WaveTriggerSource",           "ChSelfTrigger",    chEnabled[i]);
-//    SetValue2Ch(devHandle, "EventTriggerSource",          "ChSelfTrigger",    chEnabled[i]);
+    //    SetValue2Ch(devHandle, "EventTriggerSource",          "GlobalTriggerSource",    chEnabled[i]);
+    SetValue2Ch(devHandle, "WaveTriggerSource",           "ChSelfTrigger",    chEnabled[i]);
+    SetValue2Ch(devHandle, "EventTriggerSource",          "ChSelfTrigger",    chEnabled[i]);
 //    SetValue2Ch(devHandle, "WaveTriggerSource",           "TRGIN",                  chEnabled[i]);
 //    SetValue2Ch(devHandle, "EventTriggerSource",          "TRGIN",                  chEnabled[i]);
-    //    SetValue2Ch(devHandle, "SelfTriggerWidth",            "24",                    chEnabled[i]);            
+    SetValue2Ch(devHandle, "SelfTriggerWidth",            "96",                     chEnabled[i]);            
     SetValue2Ch(devHandle, "DCOffset",                    "20",                     chEnabled[i]);
     SetValue2Ch(devHandle, "TriggerThr",                  "500",                    chEnabled[i]);
     SetValue2Ch(devHandle, "PulsePolarity",               "Negative",               chEnabled[i]);
@@ -562,6 +563,7 @@ int InitV2740(void){
     SetValue2Ch(devHandle, "ChRecordLengthS",             "1875",                   chEnabled[i]);    
     SetValue2Ch(devHandle, "WaveResolution",              "Res8",                   chEnabled[i]);
     SetValue2Ch(devHandle, "ChPreTriggerS",               "625",                    chEnabled[i]);
+    //    SetValue2Ch(devHandle, "WaveSaving",                  "Always",                 chEnabled[i]);
     SetValue2Ch(devHandle, "WaveSaving",                  "On Request",                 chEnabled[i]);
     SetValue2Ch(devHandle, "WaveAnalogProbe0",            "ADCInput",               chEnabled[i]);
     SetValue2Ch(devHandle, "WaveAnalogProbe1",            "TimeFilter",             chEnabled[i]);
@@ -609,7 +611,11 @@ int InitV2740(void){
   }
 
   GetValueFromCh(devHandle, "SelfTriggerWidth",  value, 0);  
-  fprintf(stdout, "ch=0 SelfTriggerWidth : %s\n", value);        
+  fprintf(stdout, "ch=0 SelfTriggerWidth : %s\n", value);  
+  GetValueFromCh(devHandle, "SelfTriggerWidth",  value, 1);  
+  fprintf(stdout, "ch=1 SelfTriggerWidth : %s\n", value);
+  GetValueFromCh(devHandle, "TimeFilterRetriggerGuardS",  value, 1);  
+  fprintf(stdout, "ch=1 TimeFilterRetriggerGuardS : %s\n", value);          
 
   return EXIT_SUCCESS;
 }

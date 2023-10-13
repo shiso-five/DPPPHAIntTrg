@@ -1,0 +1,150 @@
+evtloop start!
+open the connection with VX2740B.
+EFN        : 20
+start      : Yes
+nssta      : No
+stop       : Yes
+reload     : Yes
+evtloop    : Yes
+name       : csample
+reset!
+Allocate Event
+MaxRawDataSize = 2621440
+Init v2740
+ModelName            : VX2740B
+FPGA_FwVer           : 1.0.63
+FwType               : DPP_PHA
+License              : FED9C75AEDD608DD17863BB9
+LicenseStatus        : Licensed
+LicenseRemainingTime : 1800
+ITLAGateWidth        : 0
+ITLBGateWidth        : 0
+sizeChEnabled = 1
+StrITLAMask: 0x2
+StrITLBMask: 0x2
+Enabled channels:1 
+Disabled channels:0 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 
+/ch/0/par/ChEnable                       <-- False
+/ch/2/par/ChEnable                       <-- False
+/ch/3/par/ChEnable                       <-- False
+/ch/4/par/ChEnable                       <-- False
+/ch/5/par/ChEnable                       <-- False
+/ch/6/par/ChEnable                       <-- False
+/ch/7/par/ChEnable                       <-- False
+/ch/8/par/ChEnable                       <-- False
+/ch/9/par/ChEnable                       <-- False
+/ch/10/par/ChEnable                      <-- False
+/ch/11/par/ChEnable                      <-- False
+/ch/12/par/ChEnable                      <-- False
+/ch/13/par/ChEnable                      <-- False
+/ch/14/par/ChEnable                      <-- False
+/ch/15/par/ChEnable                      <-- False
+/ch/16/par/ChEnable                      <-- False
+/ch/17/par/ChEnable                      <-- False
+/ch/18/par/ChEnable                      <-- False
+/ch/19/par/ChEnable                      <-- False
+/ch/20/par/ChEnable                      <-- False
+/ch/21/par/ChEnable                      <-- False
+/ch/22/par/ChEnable                      <-- False
+/ch/23/par/ChEnable                      <-- False
+/ch/24/par/ChEnable                      <-- False
+/ch/25/par/ChEnable                      <-- False
+/ch/26/par/ChEnable                      <-- False
+/ch/27/par/ChEnable                      <-- False
+/ch/28/par/ChEnable                      <-- False
+/ch/29/par/ChEnable                      <-- False
+/ch/30/par/ChEnable                      <-- False
+/ch/31/par/ChEnable                      <-- False
+/ch/32/par/ChEnable                      <-- False
+/ch/33/par/ChEnable                      <-- False
+/ch/34/par/ChEnable                      <-- False
+/ch/35/par/ChEnable                      <-- False
+/ch/36/par/ChEnable                      <-- False
+/ch/37/par/ChEnable                      <-- False
+/ch/38/par/ChEnable                      <-- False
+/ch/39/par/ChEnable                      <-- False
+/ch/40/par/ChEnable                      <-- False
+/ch/41/par/ChEnable                      <-- False
+/ch/42/par/ChEnable                      <-- False
+/ch/43/par/ChEnable                      <-- False
+/ch/44/par/ChEnable                      <-- False
+/ch/45/par/ChEnable                      <-- False
+/ch/46/par/ChEnable                      <-- False
+/ch/47/par/ChEnable                      <-- False
+/ch/48/par/ChEnable                      <-- False
+/ch/49/par/ChEnable                      <-- False
+/ch/50/par/ChEnable                      <-- False
+/ch/51/par/ChEnable                      <-- False
+/ch/52/par/ChEnable                      <-- False
+/ch/53/par/ChEnable                      <-- False
+/ch/54/par/ChEnable                      <-- False
+/ch/55/par/ChEnable                      <-- False
+/ch/56/par/ChEnable                      <-- False
+/ch/57/par/ChEnable                      <-- False
+/ch/58/par/ChEnable                      <-- False
+/ch/59/par/ChEnable                      <-- False
+/ch/60/par/ChEnable                      <-- False
+/ch/61/par/ChEnable                      <-- False
+/ch/62/par/ChEnable                      <-- False
+/ch/63/par/ChEnable                      <-- False
+/par/IOLevel                             <-- NIM
+/par/StartSource                         <-- SWcmd
+/par/EnStatEvents                        <-- False
+/par/ITLAMask                            <-- 0x2
+/par/ITLAPairLogic                       <-- OR
+/par/ITLAMainLogic                       <-- OR
+/par/ITLAGateWidth                       <-- 0
+/par/ITLBMask                            <-- 0x2
+/par/ITLBPairLogic                       <-- OR
+/par/ITLBMainLogic                       <-- OR
+/par/ITLBGateWidth                       <-- 0
+/par/ClockSource                         <-- Internal
+/par/EnClockOutFP                        <-- True
+/par/BusyInSource                        <-- Disabled
+/par/SyncOutMode                         <-- IntClk
+/par/TrgOutMode                          <-- ITLA
+/par/GPIOMode                            <-- Busy
+/lvds/0/par/LVDSMode                     <-- SelfTriggers
+/lvds/0/par/LVDSDirection                <-- Output
+/par/LVDSTrgMask                         <-- 0=0x0000000000000001
+/par/LVDSTrgMask                         <-- 1=0x0000000000000002
+/par/LVDSTrgMask                         <-- 2=0x0000000000000003
+/lvds/1/par/LVDSMode                     <-- SelfTriggers
+/lvds/1/par/LVDSDirection                <-- Output
+/lvds/2/par/LVDSMode                     <-- SelfTriggers
+/lvds/2/par/LVDSDirection                <-- Output
+/lvds/3/par/LVDSMode                     <-- SelfTriggers
+/lvds/3/par/LVDSDirection                <-- Output
+/par/TestPulsePeriod                     <-- 2000
+/par/TestPulseWidth                      <-- 500
+/par/TestPulseLowLevel                   <-- 0
+/par/TestPulseHighLevel                  <-- 32768
+/ch/1/par/ChEnable                       <-- True
+/ch/1/par/EventTriggerSource             <-- TRGIN
+/ch/1/par/DCOffset                       <-- 20
+/ch/1/par/TriggerThr                     <-- 500
+/ch/1/par/PulsePolarity                  <-- Negative
+/ch/1/par/WaveDataSource                 <-- ADC_DATA
+/ch/1/par/ChRecordLengthS                <-- 1875
+/ch/1/par/WaveResolution                 <-- Res8
+/ch/1/par/ChPreTriggerS                  <-- 625
+/ch/1/par/WaveSaving                     <-- On Request
+/ch/1/par/WaveAnalogProbe0               <-- ADCInput
+/ch/1/par/WaveAnalogProbe1               <-- TimeFilter
+/ch/1/par/WaveDigitalProbe0              <-- Trigger
+/ch/1/par/WaveDigitalProbe1              <-- TimeFilterArmed
+/ch/1/par/WaveDigitalProbe2              <-- RetriggerGuard
+/ch/1/par/WaveDigitalProbe3              <-- ADCSaturation
+/ch/1/par/TimeFilterRiseTimeS            <-- 25
+/ch/1/par/TimeFilterRetriggerGuardS      <-- 0
+/ch/1/par/EnergyFilterRiseTimeS          <-- 25
+/ch/1/par/EnergyFilterFlatTopS           <-- 125
+/ch/1/par/EnergyFilterPeakingPosition    <-- 50
+/ch/1/par/EnergyFilterPeakingAvg         <-- OneShot
+/ch/1/par/EnergyFilterPoleZeroS          <-- 6250
+/ch/1/par/EnergyFilterFineGain           <-- 1
+ch=1 SelfTriggerWidth : 8
+ch=1 TimeFilterRetriggerGuardS : 0
+free allocated memeories
+evtloop stop!
+Exit

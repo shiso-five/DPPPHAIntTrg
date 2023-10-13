@@ -156,7 +156,8 @@
 #define UNDEFINE35  35
 #define UNDEFINE36  36
 
-#define V2740 51 //ogio added
+#define V2740 52 //ogio added
+#define V2740NOTDivided 51 //ogio added
 
 // ScalerID 0--65535
 #define DTMONSCALER    1
